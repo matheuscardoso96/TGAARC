@@ -9,8 +9,6 @@ namespace TGAARC
     {
         static void Main(string[] args)
         {
-           // args = new string[1];
-          // args[0] = @"C:\Users\djmat\Desktop\teste";
             foreach (var caminho in args)
             {
                 if (caminho.Contains(".arc"))

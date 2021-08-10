@@ -21,7 +21,6 @@ namespace TGAARC.Arc
             else
                 Recriar(diretorio);
 
-
         }
 
         public void Exportar(string diretorio)
@@ -58,13 +57,10 @@ namespace TGAARC.Arc
                 RecriarArcComLista(diretorioLista);
             }
 
-
-
         }
 
         private void RecriarArcComLista(string dirLista)
         {
-
 
             string[] listaDeArquivos = File.ReadAllLines(dirLista);
             string[] split = dirLista.Split(',');
@@ -79,8 +75,6 @@ namespace TGAARC.Arc
             int enderecoBase = tamanhoAreaEntrada;
 
             List<PropriedadesArquivo> propriedadesArquivos = new List<PropriedadesArquivo>();
-
-
 
             using (BinaryWriter bw = new BinaryWriter(ms))
             {
@@ -211,20 +205,6 @@ namespace TGAARC.Arc
             }
         }
 
-
-        private static byte[] AdicionarHeaderDeCompressao(byte[] arquivoEmBytes)
-        {
-
-            byte[] arquivoComHeader = new byte[arquivoEmBytes.Length + 4];
-            arquivoComHeader[0] = 0x78;
-            arquivoComHeader[1] = 0x9C;
-            arquivoComHeader[3] = 0xCC;
-            arquivoComHeader[4] = 0x7D;
-            Array.Copy(arquivoEmBytes.ToArray(), 0, arquivoComHeader, 4, arquivoEmBytes.Length);
-
-            return arquivoComHeader;
-
-        }
     }
 
 
@@ -242,10 +222,7 @@ public class CabecalhoArc
         Versao = br.ReadUInt16();
         QuantidadeDeArquivos = br.ReadUInt16();
     }
-    public CabecalhoArc()
-    {
-
-    }
+    public CabecalhoArc() { }
 
     public void EscreverPropriedades(BinaryWriter bw)
     {
@@ -274,17 +251,10 @@ public class PropriedadesArquivo
         Endereco = br.ReadInt32();
     }
 
-    public PropriedadesArquivo()
-    {
-
-    }
+    public PropriedadesArquivo(){}
 
     public void EscreverPropriedades(BinaryWriter bw)
     {
-        if (Diretorio.Contains(@"UI\0_system\00_font\font03"))
-        {
-
-        }
         bw.Write(Encoding.ASCII.GetBytes(Diretorio));
         int totalAvancar = 128 - Diretorio.Length;
         bw.BaseStream.Seek(totalAvancar, SeekOrigin.Current);
