@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Text;
+using Ionic.Zlib;
 
 namespace TGAARC.Arc
 {
@@ -92,7 +92,7 @@ namespace TGAARC.Arc
 
                     if (usarCompresao)
                     {
-                        arquivoEmBytes = Comprimir(arquivoEmBytes);
+                        arquivoEmBytes = ComprimirOuDescomprimir(arquivoEmBytes, CompressionMode.Compress);
                     }
 
                     int tamanhoArquivoComprimido = arquivoEmBytes.Length;
@@ -150,7 +150,7 @@ namespace TGAARC.Arc
 
                 if (propriedades.TamanhoDescomprimido - 0x40000000 != propriedades.TamanhoComprimido)
                 {
-                    arquivo = Descomprimir(arquivo);
+                    arquivo = ComprimirOuDescomprimir(arquivo,CompressionMode.Decompress);
                     temComp = true;
                 }
 
@@ -175,28 +175,12 @@ namespace TGAARC.Arc
             return Encoding.ASCII.GetString(extensao).TrimEnd('\0').ToLower();
         }
 
-        private static byte[] Descomprimir(byte[] arquivoComprimido)
-        {
-            byte[] arquivoSeHeader = new byte[arquivoComprimido.Length - 2];
-            Array.Copy(arquivoComprimido, 2, arquivoSeHeader, 0, arquivoComprimido.Length - 2);
-            MemoryStream aqComprimido = new MemoryStream(arquivoSeHeader);
-            MemoryStream aqFinal = new MemoryStream();
 
-            using (DeflateStream decompressionStream = new DeflateStream(aqComprimido, CompressionMode.Decompress))
-            {
-                decompressionStream.CopyTo(aqFinal);
-
-            }
-
-            return aqFinal.ToArray();
-        }
-
-
-        public static byte[] Comprimir(byte[] bytes)
+        public static byte[] ComprimirOuDescomprimir(byte[] bytes, CompressionMode mode)
         {
             using (MemoryStream ms = new MemoryStream())
             {
-                using (Ionic.Zlib.ZlibStream zip = new Ionic.Zlib.ZlibStream(ms, Ionic.Zlib.CompressionMode.Compress, true))
+                using (ZlibStream zip = new Ionic.Zlib.ZlibStream(ms, mode, true))
                 {
                     zip.Write(bytes, 0, bytes.Length);
                 }
@@ -210,60 +194,7 @@ namespace TGAARC.Arc
 
 }
 
-public class CabecalhoArc
-{
-    public string Assinatura { get; set; }
-    public ushort Versao { get; set; }
-    public ushort QuantidadeDeArquivos { get; set; }
-
-    public CabecalhoArc(BinaryReader br)
-    {
-        Assinatura = Encoding.ASCII.GetString(br.ReadBytes(4));
-        Versao = br.ReadUInt16();
-        QuantidadeDeArquivos = br.ReadUInt16();
-    }
-    public CabecalhoArc() { }
-
-    public void EscreverPropriedades(BinaryWriter bw)
-    {
-        bw.Write(Encoding.ASCII.GetBytes(Assinatura));
-        bw.Write(Versao);
-        bw.Write(QuantidadeDeArquivos);
-
-    }
-
-}
-
-public class PropriedadesArquivo
-{
-    public string Diretorio { get; set; }
-    public uint HashExtensao { get; set; }
-    public int TamanhoComprimido { get; set; }
-    public int TamanhoDescomprimido { get; set; }
-    public int Endereco { get; set; }
-
-    public PropriedadesArquivo(BinaryReader br)
-    {
-        Diretorio = Encoding.ASCII.GetString(br.ReadBytes(0x80)).TrimEnd('\0');
-        HashExtensao = br.ReadUInt32();
-        TamanhoComprimido = br.ReadInt32();
-        TamanhoDescomprimido = br.ReadInt32();
-        Endereco = br.ReadInt32();
-    }
-
-    public PropriedadesArquivo(){}
-
-    public void EscreverPropriedades(BinaryWriter bw)
-    {
-        bw.Write(Encoding.ASCII.GetBytes(Diretorio));
-        int totalAvancar = 128 - Diretorio.Length;
-        bw.BaseStream.Seek(totalAvancar, SeekOrigin.Current);
-        bw.Write(HashExtensao);
-        bw.Write(TamanhoComprimido);
-        bw.Write(TamanhoDescomprimido);
-        bw.Write(Endereco);
 
 
-    }
-}
+
 

@@ -14,7 +14,7 @@
 
 
   <ItemGroup>
-    <PackageReference Include="Ionic.Zlib" Version="1.9.1.5" />
+    <PackageReference Include="Ionic.Zlib.Core" Version="1.0.0" />
   </ItemGroup>
 
 </Project>
