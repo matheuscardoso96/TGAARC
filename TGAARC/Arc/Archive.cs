@@ -43,12 +43,15 @@ namespace TGAARC.Arc
 
         public void ExportarArquivos(BinaryReader br, string diretorioArc)
         {
+            int contador = 0;
             foreach (var propsDeArquivo in PropriedadesDeArquivos)
             {
-                string caminhoExtracao = $"{_diretorioDeArcsExtraidos}{diretorioArc}\\{propsDeArquivo.Diretorio}{propsDeArquivo.Extensao}";
+                string nomeArquivo = contador.ToString().PadLeft(4,'0') + "_" + propsDeArquivo.Diretorio.Split('\\').Last();
+                string caminhoExtracao = $"{_diretorioDeArcsExtraidos}{diretorioArc}\\{propsDeArquivo.Diretorio.Replace(propsDeArquivo.Diretorio.Split('\\').Last(), nomeArquivo)}{propsDeArquivo.Extensao}";
                 CrieDiretorioParaExtracao(Path.GetDirectoryName(caminhoExtracao));                
                 byte[] arquivo = LerArquivoEDescomprimir(br, propsDeArquivo.TamanhoComprimido, propsDeArquivo.Endereco);
                 File.WriteAllBytes(caminhoExtracao, arquivo);
+                contador++;
             }
 
 
@@ -86,7 +89,7 @@ namespace TGAARC.Arc
         {
             Directory.CreateDirectory($"{AppContext.BaseDirectory}\\temp");
             string nomeDoArc = new DirectoryInfo(diretorio).Name;
-            string[] listaDeArquivos = Directory.GetFiles(diretorio, "*", SearchOption.AllDirectories).Where(d => ExtensoesArc.Extensoes.ContainsValue(Path.GetExtension(d))).OrderBy(d => d).ToArray();
+            string[] listaDeArquivos = Directory.GetFiles(diretorio, "*", SearchOption.AllDirectories).Where(d => ExtensoesArc.Extensoes.ContainsValue(Path.GetExtension(d))).OrderBy(d => Convert.ToUInt32(Path.GetFileName(d).Substring(0,4))).ToArray();
             int tamanhoDaTabela = listaDeArquivos.Length <= 227 ? 32760 : 65528;             
             string diretorioBase = diretorio.Replace(Path.GetFileName(diretorio), "");
             int enderecoBase = tamanhoDaTabela + 8;
@@ -121,6 +124,9 @@ namespace TGAARC.Arc
                 propriedades.Add(propriedadesArquivo);
                 enderecoBase += propriedadesArquivo.TamanhoComprimido;
             }
+
+            
+
             return propriedades;
         }
 

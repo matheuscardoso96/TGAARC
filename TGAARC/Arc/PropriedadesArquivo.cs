@@ -47,7 +47,7 @@ namespace TGAARC.Arc
             else
                 HashExtensao = ExtensoesArc.Extensoes.First(x => x.Value.StartsWith(extensao)).Key;
             
-            Diretorio = caminho.Replace($"{caminhoBase}\\","").Replace(extensao, "");
+            Diretorio = caminho.Replace($"{caminhoBase}\\","").Replace(Path.GetFileName(caminho), Path.GetFileName(caminho)[5..]).Replace(extensao, "");
             FileInfo informacoesArquivo = new FileInfo(caminho);
             TamanhoDescomprimido = (int)informacoesArquivo.Length + 0x40_00_00_00;
             byte[] arquivoComprimido = Archive.ComprimirOuDescomprimir(File.ReadAllBytes(caminho), CompressionMode.Compress);
