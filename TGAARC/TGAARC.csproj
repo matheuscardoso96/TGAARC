@@ -5,8 +5,8 @@
     <TargetFramework>net5.0</TargetFramework>
     <StartupObject>TGAARC.Program</StartupObject>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <AssemblyVersion>1.0.0.1</AssemblyVersion>
-    <FileVersion>1.0.0.1</FileVersion>
+    <AssemblyVersion>1.0.0.2</AssemblyVersion>
+    <FileVersion>1.0.0.2</FileVersion>
     <Description>Feito por Matheus Abreu</Description>
     <RepositoryUrl>https://github.com/matheuscardoso96/TGAARC</RepositoryUrl>
     <RepositoryType>publico</RepositoryType>

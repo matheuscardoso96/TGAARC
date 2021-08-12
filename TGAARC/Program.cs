@@ -9,9 +9,9 @@ namespace TGAARC
     {
         static void Main(string[] args)
         {
-           args = new string[1];
+           //args = new string[1];
             //args[0] = "table";
-            args[0] = @"special_cmn_eng";
+           // args[0] = @"special_cmn_eng";
             foreach (var caminho in args)
             {
                 if (caminho.Contains(".arc"))
