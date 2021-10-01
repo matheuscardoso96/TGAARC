@@ -23,11 +23,14 @@ namespace TGAARC.Arc
             TamanhoComprimido = br.ReadInt32();
             TamanhoDescomprimido = br.ReadInt32();
             Endereco = br.ReadInt32();
+            if (Diretorio.Contains(@"BB\obj\chr\chr230\chr230"))
+            {
 
+            }
             string extTemp = ExtensoesArc.Extensoes[HashExtensao];
 
-            if (extTemp == "xfs")
-                Extensao = $"{HashExtensao.ToString("X4")}.{extTemp}";          
+            if (extTemp.Contains("xfs"))
+                Extensao = $".{HashExtensao.ToString("X4")}.{extTemp}";          
             else
                 Extensao = extTemp;
             

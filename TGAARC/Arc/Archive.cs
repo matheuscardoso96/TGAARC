@@ -47,7 +47,7 @@ namespace TGAARC.Arc
             foreach (var propsDeArquivo in PropriedadesDeArquivos)
             {
                 string nomeArquivo = contador.ToString().PadLeft(4,'0') + "_" + propsDeArquivo.Diretorio.Split('\\').Last();
-                string caminhoExtracao = $"{_diretorioDeArcsExtraidos}{diretorioArc}\\{propsDeArquivo.Diretorio.Replace(propsDeArquivo.Diretorio.Split('\\').Last(), nomeArquivo)}{propsDeArquivo.Extensao}";
+                string caminhoExtracao = $"{_diretorioDeArcsExtraidos}{diretorioArc}\\{string.Join("\\",propsDeArquivo.Diretorio.Split('\\'),0, propsDeArquivo.Diretorio.Count( x => x == '\\'))}\\{nomeArquivo}{propsDeArquivo.Extensao}";
                 CrieDiretorioParaExtracao(Path.GetDirectoryName(caminhoExtracao));                
                 byte[] arquivo = LerArquivoEDescomprimir(br, propsDeArquivo.TamanhoComprimido, propsDeArquivo.Endereco);
                 File.WriteAllBytes(caminhoExtracao, arquivo);
